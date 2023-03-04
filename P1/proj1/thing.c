@@ -121,7 +121,6 @@ void decreaseKey(node h, int val){
         printf("decKey A[%d] to %d\n", h, h->v);
         meld(h,r);
     }
-    return ;
 }
 int
 main(){
