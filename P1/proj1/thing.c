@@ -185,5 +185,6 @@ main(){
         }
         opt=getchar();
     }
+    free(A);
     return 0;
 }
