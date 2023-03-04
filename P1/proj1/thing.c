@@ -15,25 +15,9 @@ node A;
 
 //agciliary functions
 
-node root(node h){
-    //TODO debug
-    printf("root A[%d] is ", h);
-    node fake= h;
-    while(fake->hook!=NULL){
-        fake=ptr2loc(h->hook, A);
-    }
-    printf("A[%d]\n", fake);
-    return fake;
 
-}
 
-static void link(node f, node c, int d){
-    printf("link A[%d] as %s of A[%d]\n",
-    ptr2loc(c, A),
-    d ? "rightChild" : "leftChild",
-    ptr2loc(f, A));
-    //TODO
-}
+
 
 static int randBit(void){
     static unsigned int M = 0;
@@ -57,6 +41,24 @@ int ptr2loc(node v, node A)
     if(NULL != v)
         r = ((size_t) v - (size_t) A) / sizeof(struct node);
     return (int)r;
+}
+node root(node h){
+    //TODO debug
+    printf("root A[%d] is ", h);
+    node fake= h;
+    while(fake->hook!=NULL){
+        fake=ptr2loc(h->hook, A);
+    }
+    printf("A[%d]\n", ptr2loc(fake,A));
+    return fake;
+
+}
+static void link(node f, node c, int d){
+    printf("link A[%d] as %s of A[%d]\n",
+    ptr2loc(c, A),
+    d ? "rightChild" : "leftChild",
+    ptr2loc(f, A));
+    //TODO
 }
 void showNode(node v)
 {
@@ -82,16 +84,16 @@ void showHeaps(node v){
 }
 void setV(node v, int val){
     // TODO check if root
-    printf("set A[%d] to %d\n", v, val);
+    printf("set A[%d] to %d\n", ptr2loc(v,A), val);
 
     v->v=val;
 }
 void meld(node h1, node h2){
-    printf("Meld A[%d] A[%d]\n", h1, h2);
+    printf("Meld A[%d] A[%d]\n", ptr2loc(h1,A), ptr2loc(h2,A));
     node sHelper;
     // should it only be if != istead of < ?
     if (h2->v < h1->v){
-        printf("Swap to A[%d] A[%d]\n", h2, h1);
+        printf("Swap to A[%d] A[%d]\n", ptr2loc(h2,A), ptr2loc(h1,A));
         sHelper = h2;
         h2 = h1;
         h1 = sHelper;
@@ -112,13 +114,13 @@ void decreaseKey(node h, int val){
     node r;
     if(h->hook==NULL){
         h->v=h->v - val;
-        printf("decKey A[%d] to %d\n", h, h->v);
+        printf("decKey A[%d] to %d\n", ptr2loc(h,A), h->v);
     }
     else{
         r=root(h);
         h->hook=NULL;
         h->v=h->v - val;
-        printf("decKey A[%d] to %d\n", h, h->v);
+        printf("decKey A[%d] to %d\n", ptr2loc(h,A), h->v);
         meld(h,r);
     }
 }
@@ -143,28 +145,31 @@ main(){
         case 'S': 
             /* code */
             scanf("%d", &i1);
-            showNode(i1);
+            showNode(A + i1);
             //printf("%d\n",i1);
             break;
         case 'P': 
             /* code */
             scanf("%d", &i1);
-            showHeaps(i1);
+            showHeaps(A + i1);
             break;
         case 'V': 
             /* code */
             scanf("%d", &i1);
             scanf("%d", &i2);
-            setV(i1,i2);
+            setV(A + i1,i2);
             break;
         case 'U': 
             /* code */
+            scanf("%d", &i1);
+            scanf("%d", &i2);
+            meld(A + i1, A + i2);
             break;
         case 'R': 
             /* code */
             scanf("%d", &i1);
             scanf("%d", &i2);
-            decreaseKey(i1, i2);
+            decreaseKey(A + i1, i2);
             break;
         case 'M': 
             /* code */
