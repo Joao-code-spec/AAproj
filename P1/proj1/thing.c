@@ -261,6 +261,11 @@ int main(){
         }
         opt=getchar();
     }
+    printf("Final configuration:\n");
+    /*TODO check if A + i1*/
+    for(i1=0;i1<n;i1++){
+        showNode(A + i1);
+    }
     free(A);
     return 0;
 }
