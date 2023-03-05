@@ -44,8 +44,8 @@ int ptr2loc(node v, node A)
 }
 node root(node h){
     //TODO debug
-    printf("root A[%d] is ", h);
     node fake= h;
+    printf("root A[%d] is ", h);
     while(fake->hook!=NULL){
         fake=ptr2loc(h->hook, A);
     }
@@ -88,9 +88,11 @@ void setV(node v, int val){
 
     v->v=val;
 }
-void meld(node h1, node h2){
-    printf("Meld A[%d] A[%d]\n", ptr2loc(h1,A), ptr2loc(h2,A));
+int meld(node h1, node h2){
     node sHelper;
+    int i;
+    printf("Meld A[%d] A[%d]\n", ptr2loc(h1,A), ptr2loc(h2,A));
+
     // should it only be if != istead of < ?
     if (h2->v < h1->v){
         printf("Swap to A[%d] A[%d]\n", ptr2loc(h2,A), ptr2loc(h1,A));
@@ -106,7 +108,9 @@ void meld(node h1, node h2){
     }
 
 
-    //TODO the rest and then print
+    //TODO the rest, links and then print 
+    //TODO return root
+    return 0;
 
 }
 void decreaseKey(node h, int val){
@@ -124,8 +128,68 @@ void decreaseKey(node h, int val){
         meld(h,r);
     }
 }
-int
-main(){
+
+int vMin(node n){
+    int i;
+    node r;
+    r = root(n);
+    i= r->v;
+    printf("min A[%d]\n", ptr2loc(r,A));
+    return i;
+}
+int idOfMin(node n){
+    int i;
+    node r;
+    r = root(n);
+    i= ptr2loc(r,A);
+    return i;
+}
+int extractMin(node n){
+    node r;
+    printf("extractMin A[%d]\n", ptr2loc(n,A));
+    r = root(n);
+    r->v=0;
+    if(r->leftChild==NULL && r->rightChild==NULL){
+        return ptr2loc(n,A);
+    }
+    //if rightchild exists alone
+    if(r->leftChild==NULL){
+        r->rightChild->hook=NULL;
+        return ptr2loc(r->rightChild,A);
+    }
+    //if leftchild exists alone
+    if(r->rightChild==NULL){
+        r->leftChild->hook=NULL;
+        return ptr2loc(r->leftChild,A);
+    }
+    //if both exist
+    r->leftChild->hook=NULL;
+    r->rightChild->hook=NULL;
+    //TODO set r->leftChild rightChild to null?
+    return meld(r->leftChild,r->rightChild);   
+}
+
+int deleteNode(node n){
+    node r;
+    int i;
+    printf("delete A[%d]\n", ptr2loc(n,A));
+    if(n->hook==NULL){
+        return extractMin(n);
+    }
+    //else
+    r=root(n);
+    //TODO check if cut is right
+    n->hook=NULL;
+    i=extractMin(n);
+    if(n->leftChild==NULL && n->rightChild==NULL){
+        return ptr2loc(r,A);
+    }
+    //else
+    //TODO check if A + i is right
+    return meld(r,A + i);
+}
+
+int main(){
     int n;
     int seed;
     int i1;
@@ -173,15 +237,23 @@ main(){
             break;
         case 'M': 
             /* code */
+            scanf("%d", &i1);
+            vMin(A + i1);
             break;
         case 'A': 
             /* code */
+            scanf("%d", &i1);
+            idOfMin(A + i1);
             break;
         case 'E': 
             /* code */
+            scanf("%d", &i1);
+            extractMin(A + i1);
             break;
         case 'D': 
             /* code */
+            scanf("%d", &i1);
+            deleteNode(A + i1);
             break;
                                                                         
         default:
