@@ -45,7 +45,7 @@ int ptr2loc(node v, node A)
 node root(node h){
     /*TODO debug*/
     node fake= h;
-    printf("root A[%d] is ", h);
+    printf("root A[%d] is ", ptr2loc(h,A));
     while(fake->hook!=NULL){
         fake=ptr2loc(h->hook, A);
     }
@@ -53,12 +53,21 @@ node root(node h){
     return fake;
 
 }
+/*0 == false everything else == true*/
 static void link(node f, node c, int d){
     printf("link A[%d] as %s of A[%d]\n",
     ptr2loc(c, A),
     d ? "rightChild" : "leftChild",
     ptr2loc(f, A));
-    /*TODO*/
+    if(d){
+        /*make c rightChild of f*/
+        f->rightChild=c;
+    }
+    else{
+        f->leftChild=c;
+    }
+    /*TODO check if allocation is right*/
+    c->hook=&f;
 }
 void showNode(node v)
 {
@@ -93,6 +102,8 @@ int meld(node h1, node h2){
     int i;
     printf("Meld A[%d] A[%d]\n", ptr2loc(h1,A), ptr2loc(h2,A));
 
+    if(h1==NULL) return ptr2loc(h2,A);
+
     /* should it only be if != istead of < ?*/
     if (h2->v < h1->v){
         printf("Swap to A[%d] A[%d]\n", ptr2loc(h2,A), ptr2loc(h1,A));
@@ -101,17 +112,17 @@ int meld(node h1, node h2){
         h1 = sHelper;
     }
     if(randBit()==1){
-        meld(h1->rightChild,h2);
+        i=meld(h1->rightChild,h2);
+        link(h1,h2,1);
+        return ptr2loc(h1,A);
     }
     else{
         meld(h1->leftChild,h2);
+        link(h1,h2,0);
+        return ptr2loc(h1,A);
     }
-
-
-    /*TODO the rest, links and then print*/ 
-    /*TODO return root*/
-    return 0;
-
+    /*TODO remove?*/
+    return -1;
 }
 void decreaseKey(node h, int val){
     /* TODO what about parent? what is he pointing to*/
