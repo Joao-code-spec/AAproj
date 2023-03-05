@@ -13,7 +13,7 @@ node *hook; /* Pointer to field in the father node */
 
 node A;
 
-//agciliary functions
+/*agciliary functions*/
 
 
 
@@ -43,7 +43,7 @@ int ptr2loc(node v, node A)
     return (int)r;
 }
 node root(node h){
-    //TODO debug
+    /*TODO debug*/
     node fake= h;
     printf("root A[%d] is ", h);
     while(fake->hook!=NULL){
@@ -58,7 +58,7 @@ static void link(node f, node c, int d){
     ptr2loc(c, A),
     d ? "rightChild" : "leftChild",
     ptr2loc(f, A));
-    //TODO
+    /*TODO*/
 }
 void showNode(node v)
 {
@@ -83,7 +83,7 @@ void showHeaps(node v){
     showHeaps(v->rightChild);
 }
 void setV(node v, int val){
-    // TODO check if root
+    /* TODO check if root*/
     printf("set A[%d] to %d\n", ptr2loc(v,A), val);
 
     v->v=val;
@@ -93,7 +93,7 @@ int meld(node h1, node h2){
     int i;
     printf("Meld A[%d] A[%d]\n", ptr2loc(h1,A), ptr2loc(h2,A));
 
-    // should it only be if != istead of < ?
+    /* should it only be if != istead of < ?*/
     if (h2->v < h1->v){
         printf("Swap to A[%d] A[%d]\n", ptr2loc(h2,A), ptr2loc(h1,A));
         sHelper = h2;
@@ -108,13 +108,13 @@ int meld(node h1, node h2){
     }
 
 
-    //TODO the rest, links and then print 
-    //TODO return root
+    /*TODO the rest, links and then print*/ 
+    /*TODO return root*/
     return 0;
 
 }
 void decreaseKey(node h, int val){
-    // TODO what about parent? what is he pointing to
+    /* TODO what about parent? what is he pointing to*/
     node r;
     if(h->hook==NULL){
         h->v=h->v - val;
@@ -152,20 +152,20 @@ int extractMin(node n){
     if(r->leftChild==NULL && r->rightChild==NULL){
         return ptr2loc(n,A);
     }
-    //if rightchild exists alone
+    /*if rightchild exists alone*/
     if(r->leftChild==NULL){
         r->rightChild->hook=NULL;
         return ptr2loc(r->rightChild,A);
     }
-    //if leftchild exists alone
+    /*if leftchild exists alone*/
     if(r->rightChild==NULL){
         r->leftChild->hook=NULL;
         return ptr2loc(r->leftChild,A);
     }
-    //if both exist
+    /*if both exist*/
     r->leftChild->hook=NULL;
     r->rightChild->hook=NULL;
-    //TODO set r->leftChild rightChild to null?
+    /*TODO set r->leftChild rightChild to null?*/
     return meld(r->leftChild,r->rightChild);   
 }
 
@@ -176,16 +176,16 @@ int deleteNode(node n){
     if(n->hook==NULL){
         return extractMin(n);
     }
-    //else
+    /*else*/
     r=root(n);
-    //TODO check if cut is right
+    /*TODO check if cut is right*/
     n->hook=NULL;
     i=extractMin(n);
     if(n->leftChild==NULL && n->rightChild==NULL){
         return ptr2loc(r,A);
     }
-    //else
-    //TODO check if A + i is right
+    /*else*/
+    /*TODO check if A + i is right*/
     return meld(r,A + i);
 }
 
@@ -210,7 +210,7 @@ int main(){
             /* code */
             scanf("%d", &i1);
             showNode(A + i1);
-            //printf("%d\n",i1);
+            /*printf("%d\n",i1);*/
             break;
         case 'P': 
             /* code */
