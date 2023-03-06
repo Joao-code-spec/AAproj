@@ -47,7 +47,7 @@ node root(node h){
     node fake= h;
     printf("root A[%d] is ", ptr2loc(h,A));
     while(fake->hook!=NULL){
-        fake=ptr2loc(h->hook, A);
+        fake=&A[ptr2loc(h->hook, A)];
     }
     printf("A[%d]\n", ptr2loc(fake,A));
     return fake;
