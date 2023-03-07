@@ -47,7 +47,7 @@ node root(node h){
     node fake= h;
     printf("root A[%d] is ", ptr2loc(h,A));
     while(fake->hook!=NULL){
-        fake=&A[ptr2loc(h->hook, A)];
+        fake=&A[ptr2loc((node)h->hook, A)];
     }
     printf("A[%d]\n", ptr2loc(fake,A));
     return fake;
@@ -62,12 +62,12 @@ static void link(node f, node c, int d){
     if(d){
         /*make c rightChild of f*/
         f->rightChild=c;
+        c->hook=&f->rightChild;
     }
     else{
         f->leftChild=c;
+        c->hook=&f->leftChild;
     }
-    /*TODO check if allocation is right*/
-    c->hook=&f;
 }
 void showNode(node v)
 {
@@ -88,8 +88,10 @@ void showNode(node v)
 }
 void showHeaps(node v){
     showNode(v);
-    showHeaps(v->leftChild);
-    showHeaps(v->rightChild);
+    if(v->leftChild!=NULL)
+        showHeaps(v->leftChild);
+    if(v->rightChild!=NULL)
+        showHeaps(v->rightChild);
 }
 void setV(node v, int val){
     /* TODO check if root*/
@@ -101,7 +103,6 @@ int meld(node h1, node h2){
     node sHelper;
     int i;
     printf("Meld A[%d] A[%d]\n", ptr2loc(h1,A), ptr2loc(h2,A));
-
     if(h1==NULL) return ptr2loc(h2,A);
 
     /* should it only be if != istead of < ?*/
@@ -122,21 +123,22 @@ int meld(node h1, node h2){
         return ptr2loc(h1,A);
     }
     /*TODO remove?*/
-    return -1;
 }
-void decreaseKey(node h, int val){
+int decreaseKey(node h, int val){
     /* TODO what about parent? what is he pointing to*/
     node r;
     if(h->hook==NULL){
         h->v=h->v - val;
         printf("decKey A[%d] to %d\n", ptr2loc(h,A), h->v);
+        return h->v;
     }
     else{
         r=root(h);
+        *h->hook=NULL;
         h->hook=NULL;
         h->v=h->v - val;
         printf("decKey A[%d] to %d\n", ptr2loc(h,A), h->v);
-        meld(h,r);
+        return meld(h,r);
     }
 }
 
@@ -238,13 +240,13 @@ int main(){
             /* code */
             scanf("%d", &i1);
             scanf("%d", &i2);
-            meld(A + i1, A + i2);
+            printf("%d\n",meld(A + i1, A + i2));
             break;
         case 'R': 
             /* code */
             scanf("%d", &i1);
             scanf("%d", &i2);
-            decreaseKey(A + i1, i2);
+            printf("%d\n",decreaseKey(A + i1, i2));
             break;
         case 'M': 
             /* code */
