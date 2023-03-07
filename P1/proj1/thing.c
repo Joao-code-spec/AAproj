@@ -199,10 +199,10 @@ int deleteNode(node n){
     /*TODO check if cut is right*/
     *n->hook=NULL;
     n->hook=NULL;
-    i=extractMin(n);
     if(n->leftChild==NULL && n->rightChild==NULL){
         return ptr2loc(r,A);
     }
+    i=extractMin(n);
     /*else*/
     /*TODO check if A + i is right*/
     return meld(r,A + i);
