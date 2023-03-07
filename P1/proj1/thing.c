@@ -43,11 +43,13 @@ int ptr2loc(node v, node A)
     return (int)r;
 }
 node root(node h){
-    /*TODO debug*/
+    /*TODO remove comment*/
     node fake= h;
     printf("root A[%d] is ", ptr2loc(h,A));
     while(fake->hook!=NULL){
-        fake=&A[ptr2loc((node)h->hook, A)];
+        /*printf("c %d\n",ptr2loc(h, A));*/
+        fake=&A[ptr2loc((node)fake->hook, A)];
+        /*printf("f %d\n",ptr2loc(fake,A));*/
     }
     printf("A[%d]\n", ptr2loc(fake,A));
     return fake;
@@ -95,8 +97,8 @@ void showHeaps(node v){
 }
 void setV(node v, int val){
     /* TODO check if root*/
-    printf("set A[%d] to %d\n", ptr2loc(v,A), val);
-
+    
+    /*v->hook=NULL;*/
     v->v=val;
 }
 int meld(node h1, node h2){
@@ -114,31 +116,28 @@ int meld(node h1, node h2){
     }
     if(randBit()==1){
         i=meld(h1->rightChild,h2);
-        link(h1,h2,1);
+        link(h1,&A[i],1);
         return ptr2loc(h1,A);
     }
     else{
-        meld(h1->leftChild,h2);
-        link(h1,h2,0);
+        i=meld(h1->leftChild,h2);
+        link(h1,&A[i],0);
         return ptr2loc(h1,A);
     }
     /*TODO remove?*/
 }
 int decreaseKey(node h, int val){
-    /* TODO what about parent? what is he pointing to*/
     node r;
     if(h->hook==NULL){
-        h->v=h->v - val;
-        printf("decKey A[%d] to %d\n", ptr2loc(h,A), h->v);
-        return h->v;
+        h->v=val;
+        return ptr2loc(h,A);
     }
     else{
         r=root(h);
         *h->hook=NULL;
         h->hook=NULL;
-        h->v=h->v - val;
-        printf("decKey A[%d] to %d\n", ptr2loc(h,A), h->v);
-        return meld(h,r);
+        h->v=val;
+        return meld(r,h);
     }
 }
 
@@ -147,7 +146,6 @@ int vMin(node n){
     node r;
     r = root(n);
     i= r->v;
-    printf("min A[%d]\n", ptr2loc(r,A));
     return i;
 }
 int idOfMin(node n){
@@ -159,6 +157,7 @@ int idOfMin(node n){
 }
 int extractMin(node n){
     node r;
+    int i;
     printf("extractMin A[%d]\n", ptr2loc(n,A));
     r = root(n);
     r->v=0;
@@ -168,30 +167,37 @@ int extractMin(node n){
     /*if rightchild exists alone*/
     if(r->leftChild==NULL){
         r->rightChild->hook=NULL;
-        return ptr2loc(r->rightChild,A);
+        i = ptr2loc(r->rightChild,A);
+        r->rightChild=NULL;
+        return i;
     }
     /*if leftchild exists alone*/
     if(r->rightChild==NULL){
         r->leftChild->hook=NULL;
-        return ptr2loc(r->leftChild,A);
+        i = ptr2loc(r->leftChild,A);
+        r->leftChild=NULL;
+        return i;
     }
     /*if both exist*/
     r->leftChild->hook=NULL;
     r->rightChild->hook=NULL;
     /*TODO set r->leftChild rightChild to null?*/
-    return meld(r->leftChild,r->rightChild);   
+    i = meld(r->leftChild,r->rightChild);
+    r->leftChild=NULL;
+    r->rightChild=NULL;
+    return i;   
 }
 
 int deleteNode(node n){
     node r;
     int i;
-    printf("delete A[%d]\n", ptr2loc(n,A));
     if(n->hook==NULL){
         return extractMin(n);
     }
     /*else*/
     r=root(n);
     /*TODO check if cut is right*/
+    *n->hook=NULL;
     n->hook=NULL;
     i=extractMin(n);
     if(n->leftChild==NULL && n->rightChild==NULL){
@@ -234,6 +240,7 @@ int main(){
             /* code */
             scanf("%d", &i1);
             scanf("%d", &i2);
+            printf("set A[%d] to %d\n", i1, i2);
             setV(A + i1,i2);
             break;
         case 'U': 
@@ -246,11 +253,13 @@ int main(){
             /* code */
             scanf("%d", &i1);
             scanf("%d", &i2);
+            printf("decKey A[%d] to %d\n", i1, i2);
             printf("%d\n",decreaseKey(A + i1, i2));
             break;
         case 'M': 
             /* code */
             scanf("%d", &i1);
+            printf("min A[%d]\n", i1);
             printf("%d\n",vMin(A + i1));
             break;
         case 'A': 
@@ -266,6 +275,7 @@ int main(){
         case 'D': 
             /* code */
             scanf("%d", &i1);
+            printf("delete A[%d]\n", i1);
             printf("%d\n",deleteNode(A + i1));
             break;
                                                                         
@@ -275,7 +285,6 @@ int main(){
         opt=getchar();
     }
     printf("Final configuration:\n");
-    /*TODO check if A + i1*/
     for(i1=0;i1<n;i1++){
         showNode(A + i1);
     }
