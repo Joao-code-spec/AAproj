@@ -251,22 +251,22 @@ int main(){
         case 'M': 
             /* code */
             scanf("%d", &i1);
-            vMin(A + i1);
+            printf("%d\n",vMin(A + i1));
             break;
         case 'A': 
             /* code */
             scanf("%d", &i1);
-            idOfMin(A + i1);
+            printf("%d\n",idOfMin(A + i1));
             break;
         case 'E': 
             /* code */
             scanf("%d", &i1);
-            extractMin(A + i1);
+            printf("%d\n",extractMin(A + i1));
             break;
         case 'D': 
             /* code */
             scanf("%d", &i1);
-            deleteNode(A + i1);
+            printf("%d\n",deleteNode(A + i1));
             break;
                                                                         
         default:
